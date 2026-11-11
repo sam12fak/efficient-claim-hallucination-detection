@@ -229,28 +229,46 @@ streamlit run app/streamlit_app.py
 
 ### Run Automated Unit Tests
 ```bash
-python -m pytest tests/test_pipeline.py -v
+python -m pytest tests/ -v
 ```
 
-### Reproduce Data Preprocessing & Feature Extraction
-```bash
-python src/preprocessing.py
-python src/feature_fusion.py
-```
+### One-Click Launchers (Windows)
+- **`run_all.bat`**: Launches Ollama, Streamlit Interactive RAG (port 8501), and Netflix Technical Showcase (port 8080) simultaneously.
+- **`run_project.bat`**: Launches the Streamlit Application on `http://localhost:8501`.
+- **`run_webapp.bat`**: Launches the Netflix Technical Showcase on `http://localhost:8080`.
+- **`stop_all.bat`**: Safely shuts down all running web servers on ports 8501 and 8080.
 
-### Retrain Models
-```bash
-python src/train.py
-```
+---
 
-### Run Benchmark Evaluation & Generate Charts
-```bash
-python src/evaluate.py
+## 9. Interactive RAG with Local Ollama (`qwen2.5:3b`)
+
+NeuralFact includes an end-to-end Retrieval-Augmented Generation (RAG) agent that parses course lecture materials (PDF syllabi, PPTX presentations), queries a local Ollama LLM, and immediately applies sub-millisecond claim verification guardrails:
+
+```python
+from src.rag_pipeline import get_rag_pipeline
+
+# Initialize RAG pipeline (loads dense index over PPTX/PDF course materials)
+pipeline = get_rag_pipeline()
+
+# Run interactive query
+result = pipeline.run_query(
+    query="What are the grading percentages and assignments in the course syllabus?",
+    top_k=3,
+    model_name="qwen2.5:3b"
+)
+
+print(f"Model Answer:\n{result.llm_answer}\n")
+print(f"Faithfulness Score: {result.faithfulness_score}% (Risk: {result.overall_risk_percent}%)")
+print(f"Latency: Retrieval={result.timing['retrieval_ms']}ms | LLM={result.timing['llm_ms']}ms | Verification={result.timing['detection_ms']}ms")
+
+# Inspect claim-level verification
+for claim in result.hallucination_analysis["claims"]:
+    print(f"[{claim['prediction']}] (Risk {claim['hallucination_risk']}%) {claim['claim_text']}")
 ```
 
 ---
 
-## 9. Python API Example
+## 10. Python API Example (Direct Claim Detection)
 
 ```python
 from src.predict import predict_hallucinations

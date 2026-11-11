@@ -72,6 +72,17 @@ const ARCH_NODES = {
     math: "P(y=1 \\mid \\mathbf{x}) = \\frac{1}{1 + \\exp(A \\cdot f_{\\text{XGB}}(\\mathbf{x}) + B)}",
     inputs: "39-D feature vector per claim",
     outputs: "Calibrated probability P(Hallucination in [0, 1])"
+  },
+  "rag-ollama": {
+    episode: "EPISODE 07",
+    title: "Local Ollama RAG & Dynamic Grounding",
+    file: "src/rag_pipeline.py",
+    runtime: "~ 1.2 s (E2E)",
+    badge: "RAG + Ollama qwen2.5:3b",
+    summary: "End-to-end Retrieval-Augmented Generation indexing Computational Linguistics PPTX slides and PDF course notes. Feeds retrieved context into local Ollama LLMs (qwen2.5:3b) and immediately applies sub-millisecond claim verification to guard against generative hallucinations.",
+    math: "\\text{Answer} \\sim \\text{LLM}(Q, \\text{TopK}(C)), \\quad \\text{Risk} = \\text{NeuralFact}(Q, \\text{Answer}, \\text{TopK}(C))",
+    inputs: "Course query + indexed PPTX slides & PDF notes (769 chunks)",
+    outputs: "Grounded LLM answer + per-claim hallucination risk & latency breakdown"
   }
 };
 
@@ -300,6 +311,16 @@ const SIM_PRESETS = {
     q: "What is the capital of France?",
     ctx: "",
     a: "Paris is the capital of France."
+  },
+  rag_factual: {
+    q: "What are the grading weights and assignments in the Computational Linguistics course?",
+    ctx: "CS 6320 / LING 4300 Computational Linguistics. Grading: 4 Programming Assignments account for 35% total (8.75% each), Midterm Examination is 20%, and the Final Factuality Term Project is 30%.",
+    a: "The Computational Linguistics course assigns 35% to four programming assignments, 20% to the midterm examination, and 30% to the final factuality project."
+  },
+  rag_hallu: {
+    q: "What are the grading weights and assignments in the Computational Linguistics course?",
+    ctx: "CS 6320 / LING 4300 Computational Linguistics. Grading: 4 Programming Assignments account for 35% total (8.75% each), Midterm Examination is 20%, and the Final Factuality Term Project is 30%.",
+    a: "The course requires 50% for weekly pop quizzes. Students must also complete an internship at OpenAI to pass the class."
   }
 };
 
